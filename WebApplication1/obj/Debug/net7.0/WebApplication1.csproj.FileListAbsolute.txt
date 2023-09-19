@@ -260,3 +260,8 @@ D:\web api project\WebApplication1\bin\Debug\net7.0\runtimes\win\lib\net6.0\Syst
 D:\web api project\WebApplication1\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 D:\web api project\WebApplication1\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\web api project\WebApplication1\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\BCrypt.Net-Next.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\Scrutor.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll

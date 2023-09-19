@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WebApplication1.login;
 using WebApplication1.Models;
+using WebApplication1.Models.Functions;
+using WebApplication1.Models.IdentityModel;
 
 namespace WebApplication1.Controllers
 {
@@ -15,14 +22,19 @@ namespace WebApplication1.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly SmallprojectContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IRoleId _roleId;
 
-        public StudentsController(SmallprojectContext context)
+        public StudentsController(SmallprojectContext context,IConfiguration configuration,IRoleId roleId)
         {
             _context = context;
+            _configuration = configuration;
+            _roleId = roleId;
         }
 
         // GET: api/Students
         [HttpGet]
+        //[Authorize(Roles ="Admin")]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
           if (_context.Students == null)
@@ -33,58 +45,55 @@ namespace WebApplication1.Controllers
         }
 
         // GET: api/Students/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Student>> GetStudent(long id)
+        [HttpGet("getStudent")]
+        [Authorize(Roles ="Admin,student")]
+        public async Task<ActionResult<Student>> GetStudent()
         {
-          if (_context.Students == null)
-          {
-              return NotFound();
-          }
-            var student = await _context.Students.FindAsync(id);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-            if (student == null)
+        if (identity != null)
             {
-                return NotFound();
+                Ident iden = _roleId.GetIden(identity);
+                var user = await _context.Students.FirstOrDefaultAsync(x=> x.Id == iden.Id);
+                return user;
             }
-
-            return student;
+            return null;
         }
 
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutStudent(long id, Student student)
+        [HttpPut("editStudent")]
+        [Authorize(Roles ="Admin,student")]
+        public async Task<IActionResult> PutStudent(Student student)
         {
-            if (id != student.Id)
+            if (_context.Students != null)
             {
-                return BadRequest();
-            }
-
-            _context.Entry(student).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentExists(id))
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                if(identity != null)
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                    Ident iden = _roleId.GetIden(identity);
+                    Student user = await _context.Students.FirstOrDefaultAsync(x=>x.Id == iden.Id);
+                    user.Name = student.Name;
+                    user.RollNo = student.RollNo;
+                    user.FatherName = student.FatherName;
+                    user.MotherName = student.MotherName;
+                    user.Address = student.Address;
+                    user.Dob = student.Dob;
+                    user.AdmissionNo = student.AdmissionNo;
+                    user.DeptmentId = student.DeptmentId;
+                    _context.SaveChangesAsync();
+                    return Ok("Updated");
 
-            return NoContent();
+                }
+                return BadRequest("Error");
+            }
+            return BadRequest("Model not valid");
         }
 
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        [HttpPost("Register")]
+        public async Task<ActionResult<Student>> StudentRegister(Student student)
         {
           if (_context.Students == null)
           {
@@ -112,6 +121,7 @@ namespace WebApplication1.Controllers
 
         // DELETE: api/Students/5
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeleteStudent(long id)
         {
             if (_context.Students == null)
@@ -135,8 +145,53 @@ namespace WebApplication1.Controllers
             return (_context.Students?.Any(e => e.Id == id)).GetValueOrDefault(); 
         }
 
-        public static LoginUser user = new LoginUser();
 
-        
+        [HttpPost("login")]
+        public async Task<IActionResult> StudentLogin(LoginUser request)
+        {
+            var user = await AuthenticatUser(request);
+
+            if (user != null)
+            {
+                var token = CreateToken(user.Id, "student");
+                return Ok(token);
+            }
+            return NotFound("Student details not found");
+        }
+
+        private async Task<Student> AuthenticatUser(LoginUser request)
+        {
+
+            var curuser = await _context.Students.FirstOrDefaultAsync(o =>o.RollNo == request.RollNo && o.Password == request.Password);
+            if (curuser != null)
+            {
+                return curuser;
+            }
+            return null;
+        }
+
+        private string CreateToken(long id,string Role)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name,id.ToString()),
+                new Claim(ClaimTypes.Role,Role)
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration["Jwt:Key"]));
+            var cred = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Audience"],
+                    claims: claims,
+                    expires: DateTime.Now.AddDays(1),
+                    signingCredentials:cred
+                );
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
+
     }
 }

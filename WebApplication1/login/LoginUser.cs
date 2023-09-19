@@ -3,7 +3,7 @@
     public class LoginUser
     {
 
-        public string RollNo { get; set; } = null!;
-        public  string Password { get; set; } = null!;
+        public string RollNo { get; set; } 
+        public string Password { get; set; } 
     }
 }
