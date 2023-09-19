@@ -34,14 +34,14 @@ namespace WebApplication1.Controllers
 
         // GET: api/Students
         [HttpGet]
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin,student")]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
           if (_context.Students == null)
           {
               return NotFound();
           }
-            return await _context.Students.ToListAsync();
+            return await _context.Students.Include(x => x.Deptment).ToListAsync();
         }
 
         // GET: api/Students/5
@@ -54,7 +54,7 @@ namespace WebApplication1.Controllers
         if (identity != null)
             {
                 Ident iden = _roleId.GetIden(identity);
-                var user = await _context.Students.FirstOrDefaultAsync(x=> x.Id == iden.Id);
+                var user = await _context.Students.Include(x=> x.Deptment).FirstOrDefaultAsync(x=> x.Id == iden.Id);
                 return user;
             }
             return null;

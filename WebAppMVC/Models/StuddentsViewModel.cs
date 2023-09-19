@@ -1,4 +1,6 @@
-﻿namespace WebAppMVC.Models
+﻿
+
+namespace WebAppMVC.Models
 {
     public class StuddentsViewModel
     {
@@ -19,5 +21,7 @@
         public string? AdmissionNo { get; set; }
 
         public long? DeptmentId { get; set; }
+
+        public virtual DeptViewModel Deptment { get; set; }
     }
 }

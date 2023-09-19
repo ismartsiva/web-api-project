@@ -265,3 +265,6 @@ D:\web api project\WebApplication1\bin\Debug\net7.0\Microsoft.AspNetCore.Authent
 D:\web api project\WebApplication1\bin\Debug\net7.0\Scrutor.dll
 D:\web api project\WebApplication1\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.dll
 D:\web api project\WebApplication1\bin\Debug\net7.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\Microsoft.AspNetCore.JsonPatch.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+D:\web api project\WebApplication1\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
