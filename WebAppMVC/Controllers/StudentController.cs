@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace WebAppMVC.Controllers
     public class StudentController : Controller
     {
         Uri baseAddress = new Uri("http://localhost:5246/api/Students/");
+        Uri baseAdd = new Uri("http://localhost:5246/api/");
         HttpClient client;
         public StudentController()
         {
@@ -76,7 +78,16 @@ namespace WebAppMVC.Controllers
             return View("Create",model);
         }
         public ActionResult Create()
-        { 
+        {
+            List<DeptViewModel> modelList = new List<DeptViewModel>();
+            HttpResponseMessage response = client.GetAsync(baseAdd+ "Departments").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                modelList = JsonConvert.DeserializeObject<List<DeptViewModel>>(data);
+
+                ViewBag["deptNames"] = modelList;
+            }
             return View();
         }
 

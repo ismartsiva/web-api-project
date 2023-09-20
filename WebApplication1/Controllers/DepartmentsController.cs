@@ -30,7 +30,6 @@ namespace WebApplication1.Controllers
           }
             return await _context.Departments.ToListAsync();
         }
-
         // GET: api/Departments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(long id)
