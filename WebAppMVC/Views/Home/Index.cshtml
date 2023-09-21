@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
 }
-<h3>Login Form</h3>
+@*<h3>Login Form</h3>
 <hr/> 
 <div class="row">
     <div class="col-md-4">
@@ -28,6 +28,30 @@
             <label>@Html.Raw(@ViewBag.Message)</label>
         </form>
     </div>
+</div>*@
+<h1 style="justify-content:center;display:flex">Login</h1>
+<div class="col-md-8 offset-md-1">
+    <section>
+        <div class="login-form-icon">
+            <i class="fas fa-user-circle fa-9x text-secondary"></i>
+        </div>
+        <br/>
+        <form asp-action="LoginUser" asp-asp-controller="Home">
+            <div asp-asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <label asp-for="RollNo" class="form-label"></label>
+            <div class="form-floating mb-3">
+                <input asp-for="RollNo" class="form-control" placeholder="">
+                <span asp-validation-for="RollNo" class="text-danger"></span>
+            </div>
+                <label asp-for="Password" class="control-label">Password </label>
+            <div class="form-floating mb-3">
+                <input asp-for="Password" type="password" class="form-control">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+            </div>
+            <label>@Html.Raw(@ViewBag.Message)</label>
+        </form>
+    </section>
 </div>
-
-
