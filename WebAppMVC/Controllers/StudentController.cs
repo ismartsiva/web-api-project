@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -14,8 +15,8 @@ namespace WebAppMVC.Controllers
 {
     public class StudentController : Controller
     {
-        Uri baseAddress = new Uri("http://localhost:5246/api/Students/");
-        Uri baseAdd = new Uri("http://localhost:5246/api/");
+        Uri baseAddress = new Uri("http://localhost:5246/api/Students");
+
         HttpClient client;
         public StudentController()
         {
@@ -52,57 +53,71 @@ namespace WebAppMVC.Controllers
 
         public async Task<ActionResult> Edit(int Id)
         {
-
-
-            StuddentsViewModel modelList = new StuddentsViewModel();
-            HttpResponseMessage response = client.GetAsync(client.BaseAddress +Id.ToString()).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                string data = response.Content.ReadAsStringAsync().Result;
-                modelList = JsonConvert.DeserializeObject<StuddentsViewModel>(data);
-
-            }
-            return View("Create",modelList);
+            Student modelList = new Student();
+            var accessToken = HttpContext.Session.GetString("jWToken");
+            var url = client.BaseAddress;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            string jsonStr = await client.GetStringAsync(url+"/getStudent");
+            modelList = JsonConvert.DeserializeObject<Student>(jsonStr);
+            return View(modelList);
         }
 
         [HttpPost]
-        public ActionResult Edit(StuddentsViewModel model)
+        public async  Task<IActionResult> Edit( Student model)
         {
+            var accessToken = HttpContext.Session.GetString("jWToken");
+            var url = client.BaseAddress;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             string data = JsonConvert.SerializeObject(model);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PutAsync(client.BaseAddress+ "/Students/"+model.Id, content).Result;
+
+            HttpResponseMessage response = client.PutAsync(client.BaseAddress + "/editStudent", content).Result;
+            //await client.PutAsync(client.BaseAddress + "editStudent", content);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
             }
-            return View("Create",model);
+
+
+            return View(model);
         }
         public ActionResult Create()
         {
-            List<DeptViewModel> modelList = new List<DeptViewModel>();
-            HttpResponseMessage response = client.GetAsync(baseAdd+ "Departments").Result;
-            if (response.IsSuccessStatusCode)
-            {
-                string data = response.Content.ReadAsStringAsync().Result;
-                modelList = JsonConvert.DeserializeObject<List<DeptViewModel>>(data);
+            //List<DeptViewModel> modelList = new List<DeptViewModel>();
+            //HttpResponseMessage response = client.GetAsync(baseAdd+ "Departments").Result;
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    string data = response.Content.ReadAsStringAsync().Result;
+            //    modelList = JsonConvert.DeserializeObject<List<DeptViewModel>>(data);
 
-                ViewBag["deptNames"] = modelList;
-            }
+            //    ViewBag["deptNames"] = modelList;
+            //}
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(StuddentsViewModel model)
+        public async Task<IActionResult> Create(Student model)
         {
             string data = JsonConvert.SerializeObject(model);   
             StringContent content = new StringContent(data,Encoding.UTF8,"application/json");
-            HttpResponseMessage response = client.PostAsync(client.BaseAddress+ "/Students", content).Result;
+            HttpResponseMessage response = client.PostAsync(client.BaseAddress+ "/Register", content).Result;
             if(response.IsSuccessStatusCode) {
                 return RedirectToAction("Index");
             }
             return View();
         }
 
-        
+        public async Task<IActionResult> Details(int id)
+        {
+           
+            var accecstoken = HttpContext.Session.GetString("jWToken");
+            var url = client.BaseAddress;
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accecstoken);
+            string jsonstr = await client.GetStringAsync(url +"/getStudent");
+            var modellist = JsonConvert.DeserializeObject<StuddentsViewModel>(jsonstr);
+            return View(modellist);
+        }
+
+
     }
 }

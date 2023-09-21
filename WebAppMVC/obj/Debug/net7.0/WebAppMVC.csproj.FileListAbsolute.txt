@@ -226,3 +226,16 @@ D:\web api project\WebAppMVC\obj\Debug\net7.0\scopedcss\Views\Shared\_HomeLayout
 D:\web api project\WebAppMVC\bin\Debug\net7.0\Microsoft.AspNetCore.JsonPatch.dll
 D:\web api project\WebAppMVC\bin\Debug\net7.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\web api project\WebAppMVC\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.Mvc.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.Razor.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.Optimization.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Net.Http.Formatting.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.Http.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.Http.WebHost.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.Helpers.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.WebPages.Deployment.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.WebPages.Razor.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\System.Web.WebPages.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\Microsoft.Web.Infrastructure.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\Antlr3.Runtime.dll
+D:\web api project\WebAppMVC\bin\Debug\net7.0\WebGrease.dll

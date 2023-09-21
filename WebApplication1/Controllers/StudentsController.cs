@@ -41,7 +41,7 @@ namespace WebApplication1.Controllers
           {
               return NotFound();
           }
-            return await _context.Students.Include(x => x.Deptment).ToListAsync();
+                return await _context.Students.Include(x => x.Deptment).ToListAsync();
         }
 
         // GET: api/Students/5
@@ -66,9 +66,8 @@ namespace WebApplication1.Controllers
         [Authorize(Roles ="Admin,student")]
         public async Task<IActionResult> PutStudent(Student student)
         {
-            if (_context.Students != null)
-            {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
+             Console.WriteLine("Put");
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
                 if(identity != null)
                 {
                     Ident iden = _roleId.GetIden(identity);
@@ -86,8 +85,6 @@ namespace WebApplication1.Controllers
 
                 }
                 return BadRequest("Error");
-            }
-            return BadRequest("Model not valid");
         }
 
         // POST: api/Students
