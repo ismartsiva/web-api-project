@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using WebAppMVC.Models;
 
-namespace WebApplication1.Models;
+namespace WebAppMVC.Models;
 
 public partial class Department
 {

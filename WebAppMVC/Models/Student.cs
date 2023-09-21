@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using WebApplication1.Models;
 
 namespace WebAppMVC.Models;
 
